@@ -2,52 +2,96 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
+from wordcloud import WordCloud, STOPWORDS
 import numpy as np
 
-st.title('Dashboard Analisis Sentimen Film')
+#title
+st.title('Review Sentiment Analysis')
+#markdown
+st.markdown('This application is all about tweet sentiment analysis of mcu films. We can analyse reviews from imdb using this streamlit app.')
+#sidebar
+st.sidebar.title('Analisis Sentimen Review IMDB Film Marvel')
+# sidebar markdown 
+#st.sidebar.markdown("🛫We can analyse passengers review from this application.🛫")
+#loading the data (the csv file is in the same folder)
+#if the file is stored the copy the path and paste in read_csv method.
+data=pd.read_csv('reviews.csv')
+#checkbox to show data 
+if st.checkbox("Show Data"):
+    st.write(data.head(50))
 
-st.markdown('Aplikasi ini dapat digunakan untuk menilai sentimen suatu film berdasarkan data twitter')
+#selectbox + visualisation
 
-st.sidebar.title('Exploratory Data Analysis')
-st.sidebar.markdown('sidebar')
-
-data=pd.read_csv('tweet.csv')
-
-if st.checkbox("show data"):
-    st.write(data.head(20))
-
-st.sidebar.subheader('Analisis')
-tweets=st.sidebar.radio('Tipe Sentimen',('positive','negative','neutral'))
-st.write(data.query('sentiment==@tweets')[['text']].sample(1).iat[0,0])
-st.write(data.query('sentiment==@tweets')[['text']].sample(1).iat[0,0])
-st.write(data.query('sentiment==@tweets')[['text']].sample(1).iat[0,0])
-
-select=st.sidebar.selectbox('Visualisation Of Tweets',['Histogram','Pie Chart'],key=1)
+# Multiple widgets of the same type may not share the same key.
+select=st.sidebar.selectbox('Visualisation Of Tweets',['Histogram','Pie Chart'],key=0)
 sentiment=data['sentiment'].value_counts()
-sentiment=pd.DataFrame({'Sentiment':sentiment.index,'Tweets':sentiment.values})
+sentiment=pd.DataFrame({'Sentiment':sentiment.index,'Reviews':sentiment.values})
 st.markdown("###  Sentiment count")
 if select == "Histogram":
-        fig = px.bar(sentiment, x='Sentiment', y='Tweets', color = 'Tweets', height= 500)
+        fig = px.bar(sentiment, x='Sentiment', y='Reviews', color = 'Reviews', height= 500)
         st.plotly_chart(fig)
 else:
-        fig = px.pie(sentiment, values='Tweets', names='Sentiment')
+        fig = px.pie(sentiment, values='Reviews', names='Sentiment')
         st.plotly_chart(fig)
 
-#slider
-st.sidebar.markdown('Time & Location of tweets')
-hr = st.sidebar.slider("Hour of the day", 0, 23)
-data['Date'] = pd.to_datetime(data['tweet_created'])
-hr_data = data[data['Date'].dt.hour == hr]
-if not st.sidebar.checkbox("Hide", True, key='1'):
-    st.markdown("### Location of the tweets based on the hour of the day")
-    st.markdown("%i tweets during  %i:00 and %i:00" % (len(hr_data), hr, (hr+1)%24))
-    st.map(hr_data)
 
 #multiselect
-st.sidebar.subheader("Film tweets by sentiment")
-choice = st.sidebar.multiselect("Film", (''), key = '0')  
+st.sidebar.subheader("Pilih Film")
+choice = st.sidebar.multiselect("film", (    'iron man',
+    'the incredible hulk',
+    'iron man 2',
+    'thor',
+    'captain america the first avenger',
+    'the avengers',
+    'iron man 3',
+    'thor the dark world',
+    'captain america the winter soldier',
+    'guardians of the galaxy',
+    'avengers age of ultron',
+    'daredevil',
+    'ant man',
+    'captain america civil war',
+    'doctor strange',
+    'guardians of the galaxy vol 2',
+    'spider man homecoming',
+    'thor ragnarok',
+    'black panther',
+    'avengers infinity war',
+    'ant man and the wasp',
+    'captain marvel',
+    'avengers endgame',
+    'spider man far from home',
+    'the falcon and the winter soldier',
+    'wandavision',
+    'loki',
+    'what if',
+    'shang chi',
+    'eternals',
+    'hawkeye',
+    'ms marvel',
+    'moon knight',
+    'she hulk', 
+    'black widow',    
+    'spider man no way home',    
+    'doctor strange in the multiverse of madness',    
+    'thor love and thunder',    
+    'werewolf by night',
+    'black panther wakanda forever'), key = '1')  
 if len(choice)>0:
     air_data=data[data.film.isin(choice)]
-
-    fig1 = px.histogram(film_data, x='film', y='sentiment', histfunc='count', color='sentiment',labels={'sentiment':'tweets'}, height=600, width=800)
+    # facet_col = 'sentiment'
+    fig1 = px.histogram(air_data, x='film', y='sentiment', histfunc='count', color='sentiment',labels={'sentiment':'reviews'}, height=600, width=800)
     st.plotly_chart(fig1)
+
+#subheader
+st.sidebar.subheader('Tweets Analyser')
+#radio buttons
+reviews=st.sidebar.radio('Sentiment Type',('positive','negative','neutral'))
+st.markdown('###  reviews samples:')
+st.write(data.query('sentiment==@reviews')[['review']].sample(1).iat[0,0])
+st.markdown('####  ========================================================')
+st.write(data.query('sentiment==@reviews')[['review']].sample(1).iat[0,0])
+st.markdown('####  ========================================================')
+st.write(data.query('sentiment==@reviews')[['review']].sample(1).iat[0,0])
+st.markdown('####  ========================================================')
+
