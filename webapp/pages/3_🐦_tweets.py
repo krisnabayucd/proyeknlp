@@ -60,11 +60,44 @@ option = st.selectbox(
     'werewolf by night',
     'black panther wakanda forever'))
 
+with st.spinner("loading model..."):
+    new_model = tf.keras.models.load_model('model_lstm.h5')
+
 response = api.search_recent_tweets(option)
 
 tweets = response.data
 
+#for tweet in tweets:
+  #st.write(tweet.text)
+  #st.write('----------------------------')
 
-for tweet in tweets:
-  st.write(tweet.text)
-  st.write('----------------------------')
+def get_sentiment(tweet):
+  vocab_size = 50000
+  max_length = 284
+  oov_tok = "<OOV>"
+  truc_type = 'post'
+  tokenizer = Tokenizer(num_words = vocab_size, oov_token=oov_tok)
+  tokenizer.fit_on_texts(tweet)
+  pred_seq = tokenizer.texts_to_sequences(tweet)
+  pred_padded = pad_sequences(pred_seq, maxlen=max_length, truncating=truc_type)
+  scores = new_model.predict(pred_padded)
+  return(scores)
+
+count = 0
+
+while (count<10):
+    # get tweets (10 tweets)
+    #tweets = api.search_recent_tweets('#crypto').data
+
+    for tweet in tweets:
+        original_tweet = tweet#.text
+        #clean_tweet = preprocess_text(original_tweet)
+        sentiment = get_sentiment(original_tweet)
+
+        st.write('--------------------------------------------------------------------Tweet--------------------------------------------------------------------')
+        st.write(original_tweet)
+        st.write('---------------------------------------------------------------------------------------------------------------------------------------------')
+        st.write('Sentiment:', sentiment)
+        time.sleep(1)
+        st.write('\n\n')
+        count += 1
