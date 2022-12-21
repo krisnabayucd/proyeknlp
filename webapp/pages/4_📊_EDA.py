@@ -6,15 +6,12 @@ from wordcloud import WordCloud, STOPWORDS
 import numpy as np
 
 #title
-st.title('Review Sentiment Analysis')
+st.title('Eksplorasi dan Visualisasi Data')
 #markdown
-st.markdown('This application is all about tweet sentiment analysis of mcu films. We can analyse reviews from imdb using this streamlit app.')
+st.markdown('Halaman ini menampilkan sejumlah visualisasi dan bagan dari sentimen')
 #sidebar
-st.sidebar.title('Analisis Sentimen Review IMDB Film Marvel')
-# sidebar markdown 
-#st.sidebar.markdown("🛫We can analyse passengers review from this application.🛫")
-#loading the data (the csv file is in the same folder)
-#if the file is stored the copy the path and paste in read_csv method.
+st.sidebar.title('Visualisasi dari Keseluruhan Sentimen')
+
 data=pd.read_csv('reviews.csv')
 #checkbox to show data 
 if st.checkbox("Show Data"):
@@ -23,7 +20,7 @@ if st.checkbox("Show Data"):
 #selectbox + visualisation
 
 # Multiple widgets of the same type may not share the same key.
-select=st.sidebar.selectbox('Visualisation Of Tweets',['Histogram','Pie Chart'],key=0)
+select=st.sidebar.selectbox('pilih jenis grafik',['Histogram','Pie Chart'],key=0)
 sentiment=data['sentiment'].value_counts()
 sentiment=pd.DataFrame({'Sentiment':sentiment.index,'Reviews':sentiment.values})
 st.markdown("###  Sentiment count")
@@ -36,8 +33,8 @@ else:
 
 
 #multiselect
-st.sidebar.subheader("Pilih Film")
-choice = st.sidebar.multiselect("film", (    'iron man',
+st.sidebar.subheader("Visulasi Sentimen per Film")
+choice = st.sidebar.multiselect("pilih film yang ingin dibandingkan", (    'iron man',
     'the incredible hulk',
     'iron man 2',
     'thor',
@@ -84,9 +81,9 @@ if len(choice)>0:
     st.plotly_chart(fig1)
 
 #subheader
-st.sidebar.subheader('Tweets Analyser')
+st.sidebar.subheader('Sampel Ulasan')
 #radio buttons
-reviews=st.sidebar.radio('Sentiment Type',('positive','negative','neutral'))
+reviews=st.sidebar.radio('pilih jenis sentimen',('positive','negative','neutral'))
 st.markdown('###  reviews samples:')
 st.write(data.query('sentiment==@reviews')[['review']].sample(1).iat[0,0])
 st.markdown('####  ========================================================')

@@ -6,11 +6,11 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-bearer = "AAAAAAAAAAAAAAAAAAAAAGyskAEAAAAAfjx9FZsojIEN0WCN49M%2Bzzt%2Fvac%3DGAOdC50nuSLx78jtQpN8m9NoZibyVKsHsZYCG2zr5NYQw5t7VA"
-consumer_key = "6dWgD1971DsRjSMRInEs8uNH7"
-consumer_secret = "6e2XIBhR21Q82cTWgO1PP6u9tyrUhuZ0mMvs80dSQ6fX0eDgGj"
-access_token = "980322159909257216-afpZwxHFcWQ4iTDMy25RSPflRK9wj7h"
-access_token_secret = "7m05JbXOZOpD9aLQMwXDEBEYqqBYo2MAlO0fjA16s5j3W"
+bearer = "AAAAAAAAAAAAAAAAAAAAAGyskAEAAAAAXEcofmXrXa2LELwm0p6wctj%2Fw9k%3DEqyojzRUMcUmIqDhOuY8NBox8zN3rI0bVuHDzxbPdGFK1Y5cG9"
+consumer_key = "pVrAbxAQy8bLa1UNGzZSF0qLx"
+consumer_secret = "uTZeGjQegghaYFYN0HALtFKS1xmqbu1AQa5fpj2kidXMF0T1qL"
+access_token = "980322159909257216-mbD4mHrwlEyG1W1ljrEjJu98gsmfYmT"
+access_token_secret = "avVLwkYMmGJqqoxyBGUBLB8kvmef5y0hqSmhTxc8UdaP7"
 
 st.markdown("<h1 style='color: #22A7EC;'>Analisis Sentimen dari Tweets Terbaru</h1>", unsafe_allow_html=True)
 
@@ -63,7 +63,7 @@ option = st.selectbox(
 with st.spinner("loading model..."):
     new_model = tf.keras.models.load_model('model_lstm.h5')
 
-response = api.search_recent_tweets(option)
+response = api.search_recent_tweets(option)#, #max_results=50)
 
 tweets = response.data
 
@@ -104,8 +104,8 @@ for tweet in tweets:
     clean_tweet = preprocess_text(original_tweet)
     sentiment = get_sentiment(clean_tweet)
 
-    st.write('------------------------Tweet-------------------------------')
+    st.write('---------------------------------------------------------------Tweet---------------------------------------------------------------')
     st.write(original_tweet)
-    st.write('------------------------------------------------------------')
+    st.write('-----------------------------------------------------------------------------------------------------------------------------------')
     st.write('Sentiment:', sentiment)
     st.write('\n\n')

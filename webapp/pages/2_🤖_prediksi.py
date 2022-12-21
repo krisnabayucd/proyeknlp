@@ -5,10 +5,10 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import numpy as np
 
 st.markdown("<h1 style='color: #22A7EC;'>Prediksi Sentimen Teks Ulasan</h1>", unsafe_allow_html=True)
-st.write("model analisis sentimen ini di..")
+st.write("#### masukkan teks ulasan yang ingin diprediksi sentimennya")
 
 with st.spinner("loading model..."):
-    new_model = tf.keras.models.load_model('nlp_final.h5')
+    new_model = tf.keras.models.load_model('model_lstm.h5')
 
 #pred_review_text = st.text_input("masukkan teks")
 
