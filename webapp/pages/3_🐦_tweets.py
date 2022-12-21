@@ -71,6 +71,22 @@ tweets = response.data
   #st.write(tweet.text)
   #st.write('----------------------------')
 
+def preprocess_text(text):
+    # convert to lower case
+    text = text.lower()
+    # remove user handle
+    text = re.sub("@[\w]*", "", text)
+    # remove http links
+    text = re.sub("http\S+", "", text)
+    # remove digits and spl characters
+    text = re.sub("[^a-zA-Z#]", " ", text)
+    # remove rt characters
+    text = re.sub("rt", "", text)
+    # remove additional spaces
+    text = re.sub("\s+", " ", text)
+
+    return text
+
 def get_sentiment(tweet):
   vocab_size = 50000
   max_length = 284
@@ -78,26 +94,18 @@ def get_sentiment(tweet):
   truc_type = 'post'
   tokenizer = Tokenizer(num_words = vocab_size, oov_token=oov_tok)
   tokenizer.fit_on_texts(tweet)
-  pred_seq = tokenizer.texts_to_sequences(tweet)
+  pred_seq = tokenizer.texts_to_sequences([tweet])
   pred_padded = pad_sequences(pred_seq, maxlen=max_length, truncating=truc_type)
   scores = new_model.predict(pred_padded)
   return(scores)
 
-count = 0
+for tweet in tweets:
+    original_tweet = tweet.text
+    clean_tweet = preprocess_text(original_tweet)
+    sentiment = get_sentiment(clean_tweet)
 
-while (count<10):
-    # get tweets (10 tweets)
-    #tweets = api.search_recent_tweets('#crypto').data
-
-    for tweet in tweets:
-        original_tweet = tweet#.text
-        #clean_tweet = preprocess_text(original_tweet)
-        sentiment = get_sentiment(original_tweet)
-
-        st.write('--------------------------------------------------------------------Tweet--------------------------------------------------------------------')
-        st.write(original_tweet)
-        st.write('---------------------------------------------------------------------------------------------------------------------------------------------')
-        st.write('Sentiment:', sentiment)
-        time.sleep(1)
-        st.write('\n\n')
-        count += 1
+    st.write('------------------------Tweet-------------------------------')
+    st.write(original_tweet)
+    st.write('------------------------------------------------------------')
+    st.write('Sentiment:', sentiment)
+    st.write('\n\n')
